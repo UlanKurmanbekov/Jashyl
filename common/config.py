@@ -1,11 +1,6 @@
-import os
 import logging
-from dotenv import load_dotenv
 from pydantic import BaseModel
-from pydantic_settings import BaseSettings
-
-
-load_dotenv()
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 def configure_logging(level=logging.INFO):
@@ -17,20 +12,26 @@ def configure_logging(level=logging.INFO):
 
 
 class RunConfig(BaseModel):
-    BOT_TOKEN: str
-    ADMIN: int
+    bot_token: str
+    admin: int
 
 
 class DataBaseConfig(BaseModel):
     url: str
     echo: bool = False
-    echo_pool: bool = False,
-    pool_size: int = 50,
-    max_overflow: int = 10,
+    echo_pool: bool = False
+    pool_size: int = 50
+    max_overflow: int = 10
 
 
 class Settings(BaseSettings):
-    run: RunConfig = RunConfig()
+    model_config = SettingsConfigDict(
+        env_file=('.env.template', '.env'),
+        case_sensitive=False,
+        env_nested_delimiter='__',
+        env_prefix='BOT_CONFIG__'
+    )
+    run: RunConfig
     db: DataBaseConfig
 
 
