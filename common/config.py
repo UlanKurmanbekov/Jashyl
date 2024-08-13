@@ -17,12 +17,16 @@ def configure_logging(level=logging.INFO):
 
 
 class RunConfig(BaseModel):
-    BOT_TOKEN: str = os.getenv('BOT_TOKEN')
-    ADMIN: int = os.getenv('ADMIN')
+    BOT_TOKEN: str
+    ADMIN: int
 
 
 class DataBaseConfig(BaseModel):
-    url: str = os.getenv('DB_URL')
+    url: str
+    echo: bool = False
+    echo_pool: bool = False,
+    pool_size: int = 50,
+    max_overflow: int = 10,
 
 
 class Settings(BaseSettings):
