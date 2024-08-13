@@ -19,9 +19,6 @@ class RunConfig(BaseModel):
 class DataBaseConfig(BaseModel):
     url: str
     echo: bool = False
-    echo_pool: bool = False
-    pool_size: int = 50
-    max_overflow: int = 10
 
 
 class Settings(BaseSettings):
