@@ -2,7 +2,7 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
 from aiogram.types import Message
-from common.config import settings, configure_logging
+from core.config import settings, configure_logging
 
 
 bot = Bot(token=settings.run.bot_token)
