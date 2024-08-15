@@ -4,7 +4,7 @@ from sqlalchemy.orm import declared_attr, relationship, Mapped, mapped_column
 
 
 if TYPE_CHECKING:
-    from ..user import User
+    from database.models.user import User
 
 
 class UserRelationMixin:
