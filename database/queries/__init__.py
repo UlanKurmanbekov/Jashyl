@@ -1,5 +1,6 @@
 __all__ = (
-    'create_user'
+    'create_pet',
+    'get_pet'
 )
 
-from .user_query import create_user
+from .pet_query import create_pet, get_pet
