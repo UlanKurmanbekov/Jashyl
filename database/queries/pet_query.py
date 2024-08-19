@@ -1,11 +1,28 @@
+from datetime import datetime, timedelta
+
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.models.pet import Pet
+from database.models.pet import Pet, PetFeedTime, PetWorkTime
 
 
 async def create_pet(session: AsyncSession, telegram_id: int):
-    obj = Pet(telegram_id=telegram_id)
-    session.add(obj)
+    pet = Pet(telegram_id=telegram_id)
+    now = datetime.utcnow()
+    pet_feed_time = PetFeedTime(
+        telegram_id=telegram_id,
+        feed_time=now,
+        next_feed_time=now
+    )
+    pet_work_time = PetWorkTime(
+        telegram_id=telegram_id,
+        work_time=now,
+        next_work_time=now
+    )
+
+    session.add(pet)
+    session.add(pet_feed_time)
+    session.add(pet_work_time)
+
     await session.commit()
 
 
@@ -14,3 +31,49 @@ async def get_pet(session: AsyncSession, telegram_id: int) -> Pet:
     result = await session.execute(query)
     return result.scalar()
 
+
+async def check_feed_status(session: AsyncSession, telegram_id: int) -> tuple[bool, timedelta]:
+    query = select(PetFeedTime).where(PetFeedTime.telegram_id == telegram_id)
+    result = await session.execute(query)
+    pet_feed_time = result.scalar()
+
+    now = datetime.utcnow()
+    time_until_feed = pet_feed_time.next_feed_time - now
+    can_feed = time_until_feed <= timedelta(seconds=0)
+
+    return can_feed, time_until_feed
+
+
+async def update_pet_experience(session: AsyncSession, telegram_id: int, experience_gain: int = 1, money: int = 50):
+    query = update(Pet).where(Pet.telegram_id == telegram_id).values(
+        experience=Pet.experience + experience_gain,
+        money=Pet.money + money
+    )
+    await session.execute(query)
+    await session.commit()
+
+
+async def update_feed_time(session: AsyncSession, telegram_id: int, interval: timedelta = timedelta(hours=6)):
+    query = (
+        update(PetFeedTime)
+        .where(PetFeedTime.telegram_id == telegram_id)
+        .values(
+            feed_time=datetime.utcnow(),
+            next_feed_time=datetime.utcnow() + interval
+        )
+    )
+    await session.execute(query)
+    await session.commit()
+
+
+async def update_work_time(session: AsyncSession, telegram_id: int, interval: timedelta = timedelta(hours=4)):
+    query = (
+        update(PetWorkTime)
+        .where(PetWorkTime.telegram_id == telegram_id)
+        .values(
+            work_time=datetime.utcnow(),
+            next_work_time=datetime.utcnow() + interval
+        )
+    )
+    await session.execute(query)
+    await session.commit()
