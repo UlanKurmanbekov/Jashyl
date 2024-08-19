@@ -6,7 +6,7 @@ from aiogram.enums import ParseMode
 from bot.middlewares.data_base_session import DataBaseSession
 from core.config import settings
 from database.db_helper import db_helper
-from bot.handlers.start import router
+from bot.handlers import router
 from utils.logger import configure_logging
 
 
