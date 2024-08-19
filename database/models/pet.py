@@ -21,6 +21,8 @@ class Pet(IntIdPKMixin, DateTimeMixin, Base):
     experience: Mapped[int] = mapped_column(Integer, default=0)
     max_experience: Mapped[int] = mapped_column(Integer, default=10)
     telegram_id: Mapped[int] = mapped_column(BigInteger)
+    health: Mapped[int] = mapped_column(Integer, default=100)
+    renamed: Mapped[str] = mapped_column(default=False)
 
     feed_time: Mapped['PetFeedTime'] = relationship('PetFeedTime', back_populates='pet', uselist=False)
     work_time: Mapped['PetWorkTime'] = relationship('PetWorkTime', back_populates='pet', uselist=False)
