@@ -1,6 +1,7 @@
+from datetime import timedelta
 from typing import TYPE_CHECKING
-from sqlalchemy import String, Integer, BigInteger
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Integer, BigInteger, DateTime, ForeignKey, func, update, select
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.models.base import Base
 from database.mixins.intidpk_mixin import IntIdPKMixin
 from database.mixins.date_time_mixin import DateTimeMixin
@@ -21,4 +22,21 @@ class Pet(IntIdPKMixin, DateTimeMixin, Base):
     max_experience: Mapped[int] = mapped_column(Integer, default=10)
     telegram_id: Mapped[int] = mapped_column(BigInteger)
 
+    feed_time: Mapped['PetFeedTime'] = relationship('PetFeedTime', back_populates='pet', uselist=False)
+    work_time: Mapped['PetWorkTime'] = relationship('PetWorkTime', back_populates='pet', uselist=False)
 
+
+class PetFeedTime(IntIdPKMixin, Base):
+    telegram_id: Mapped[int] = mapped_column(ForeignKey('pets.telegram_id'), unique=True)
+    feed_time: Mapped[DateTime] = mapped_column(DateTime)
+    next_feed_time: Mapped[DateTime] = mapped_column(DateTime)
+
+    pet: Mapped["Pet"] = relationship('Pet', back_populates='feed_time')
+
+
+class PetWorkTime(IntIdPKMixin, Base):
+    telegram_id: Mapped[int] = mapped_column(ForeignKey('pets.telegram_id'), unique=True)
+    work_time: Mapped[DateTime] = mapped_column(DateTime)
+    next_work_time: Mapped[DateTime] = mapped_column(DateTime)
+
+    pet: Mapped["Pet"] = relationship('Pet', back_populates='work_time')

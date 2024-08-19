@@ -2,9 +2,11 @@ __all__ = (
     'Base',
     'Pet',
     'Achievement',
-    'AchievementType'
+    'AchievementType',
+    'PetFeedTime',
+    'PetWorkTime'
 )
 
 from .base import Base
-from .pet import Pet
+from .pet import Pet, PetFeedTime, PetWorkTime
 from .achievement import Achievement, AchievementType
