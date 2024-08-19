@@ -6,7 +6,7 @@ from database.queries.pet_query import create_pet, get_pet
 from database.models.pet import Pet
 from bot.keyboards.inline import get_inline_buttons
 
-router = Router()
+router = Router(name=__name__)
 
 
 @router.message(F.text.casefold() == 'секретное слово')
@@ -23,17 +23,17 @@ async def take_pet(message: Message, session: AsyncSession):
 async def generate_pet_caption(pet: Pet) -> str:
     return (
         f'🦎*Имя*: {pet.name}\n⭐️*Уровень*: {pet.level}\n✨*Опыт*: {pet.experience}/{pet.max_experience}\n'
-        f'❤️*Состояние*: {"Здоровый" if pet.state else "Ранен"}\n🦗*Жучки*: {pet.money}\n\n*Достижения*:\n\n'
+        f'❤️*Состояние*: {"Здоровый" if pet.state else "Ранен"}\n🐞*Жучки*: {pet.money}\n\n*Достижения*:\n\n'
         f'🎖*Победы*: 0\n☠️*Поражения*: 0'
     )
 
 
-@router.message(F.text.casefold() == 'мой пэт')
+@router.message((F.text.casefold() == 'мой пэт') | (F.text == '@JashylBot Мой питомец'))
 async def send_pet_info(message: Message, session: AsyncSession):
     telegram_id = message.from_user.id
     pet = await get_pet(session, telegram_id)
     if not pet:
-        await message.answer('У вас еще нет питомца😶‍🌫️\n Его можно получить написав секретное слово')
+        await message.answer('У вас еще нет питомца😶‍🌫️\nЕго можно получить написав секретное слово')
         return
 
     image = pet.image
@@ -43,11 +43,10 @@ async def send_pet_info(message: Message, session: AsyncSession):
     caption = await generate_pet_caption(pet)
     inline_keyboard = get_inline_buttons(
         buttons={
-            'Информация': f'/info_{pet.id}',
-            'Инвентарь': f'/inventory_{pet.id}',
-            'На работу': f'/work_{pet.id}',
+            f'Информация': f'Информация',
+            'Инвентарь': f'Инвентарь',
         },
-        sizes=(2, 1)
+        sizes=(2,)
     )
 
     await message.answer_photo(
