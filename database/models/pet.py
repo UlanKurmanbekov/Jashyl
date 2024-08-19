@@ -1,6 +1,5 @@
-from datetime import timedelta
 from typing import TYPE_CHECKING
-from sqlalchemy import String, Integer, BigInteger, DateTime, ForeignKey, func, update, select
+from sqlalchemy import String, Integer, BigInteger, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.models.base import Base
 from database.mixins.intidpk_mixin import IntIdPKMixin
