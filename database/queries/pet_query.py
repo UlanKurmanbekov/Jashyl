@@ -53,7 +53,7 @@ async def update_pet_experience(session: AsyncSession, telegram_id: int, experie
     await session.commit()
 
 
-async def update_feed_time(session: AsyncSession, telegram_id: int, interval: timedelta = timedelta(hours=6)):
+async def update_next_feed_time(session: AsyncSession, telegram_id: int, interval: timedelta = timedelta(hours=6)):
     query = (
         update(PetFeedTime)
         .where(PetFeedTime.telegram_id == telegram_id)
@@ -66,7 +66,7 @@ async def update_feed_time(session: AsyncSession, telegram_id: int, interval: ti
     await session.commit()
 
 
-async def update_work_time(session: AsyncSession, telegram_id: int, interval: timedelta = timedelta(hours=4)):
+async def update_next_work_time(session: AsyncSession, telegram_id: int, interval: timedelta = timedelta(hours=4)):
     query = (
         update(PetWorkTime)
         .where(PetWorkTime.telegram_id == telegram_id)

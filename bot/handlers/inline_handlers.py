@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message
 from sqlalchemy.ext.asyncio import AsyncSession
 from bot.keyboards.inline import get_inline_buttons
-from database.queries.pet_query import get_pet, check_feed_status, update_pet_experience, update_feed_time
+from database.queries.pet_query import get_pet, check_feed_status, update_pet_experience, update_next_feed_time
 from utils import format_timedelta
 
 router = Router(name=__name__)
@@ -55,7 +55,7 @@ async def feed_pet(message: Message, session: AsyncSession):
         return
 
     await update_pet_experience(session, telegram_id)
-    await update_feed_time(session, telegram_id)
+    await update_next_feed_time(session, telegram_id)
 
     await message.answer(
         f'Вы успешно покормили питомца\\!\n'
