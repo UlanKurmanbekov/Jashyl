@@ -4,9 +4,13 @@ __all__ = (
     'Achievement',
     'AchievementType',
     'PetFeedTime',
-    'PetWorkTime'
+    'PetWorkTime',
+    'Work',
+    'WorkType'
 )
 
 from .base import Base
-from .pet import Pet, PetFeedTime, PetWorkTime
+from .pet import Pet, PetFeedTime
 from .achievement import Achievement, AchievementType
+from .work import Work, WorkType, PetWorkTime
+
