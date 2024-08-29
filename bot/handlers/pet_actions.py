@@ -46,7 +46,8 @@ async def send_pet_info(message: Message, session: AsyncSession):
             f'Информация': f'Информация',
             'Инвентарь': f'Инвентарь',
         },
-        sizes=(2,)
+        sizes=(2,),
+        switch_inline=True
     )
 
     await message.answer_photo(
