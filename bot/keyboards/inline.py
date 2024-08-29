@@ -6,26 +6,26 @@ from typing import Dict, Tuple
 def get_inline_buttons(
         *,
         buttons: Dict[str, str],
-        sizes: Tuple[int, ...] = (2,)
+        sizes: Tuple[int, ...] = (2,),
+        switch_inline: bool = False,
+        callback_inline: bool = False
 ) -> InlineKeyboardMarkup:
-    """
-    Создает инлайн-клавиатуру с кнопками.
-
-    Args:
-        buttons (dict): Словарь с текстами кнопок в качестве ключей и значениями
-                        URL или callback_data.
-        sizes (tuple): Размеры строк клавиатуры, по умолчанию (2,).
-
-    Returns:
-        InlineKeyboardMarkup: Клавиатура для использования в сообщениях бота.
-    """
     keyboard = InlineKeyboardBuilder()
 
     for text, value in buttons.items():
-        button = InlineKeyboardButton(
-            text=text,
-            switch_inline_query_current_chat=value
-        )
+        if switch_inline:
+            button = InlineKeyboardButton(
+                text=text,
+                switch_inline_query_current_chat=value
+            )
+        elif callback_inline:
+            button = InlineKeyboardButton(
+                text=text,
+                callback_data=value
+            )
+        else:
+            raise ValueError("Выберите либо `switch_inline`, либо `callback_inline`")
+
         keyboard.add(button)
 
     return keyboard.adjust(*sizes).as_markup()
