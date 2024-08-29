@@ -7,7 +7,7 @@ from database.mixins.date_time_mixin import DateTimeMixin
 from utils.random_image import get_random_image
 
 if TYPE_CHECKING:
-    pass
+    from database.models.work import PetWorkTime
 
 
 class Pet(IntIdPKMixin, DateTimeMixin, Base):
@@ -34,10 +34,3 @@ class PetFeedTime(IntIdPKMixin, Base):
 
     pet: Mapped["Pet"] = relationship('Pet', back_populates='feed_time')
 
-
-class PetWorkTime(IntIdPKMixin, Base):
-    telegram_id: Mapped[int] = mapped_column(ForeignKey('pets.telegram_id'), unique=True)
-    work_time: Mapped[DateTime] = mapped_column(DateTime)
-    next_work_time: Mapped[DateTime] = mapped_column(DateTime)
-
-    pet: Mapped["Pet"] = relationship('Pet', back_populates='work_time')

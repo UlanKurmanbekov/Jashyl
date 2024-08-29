@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.models.pet import Pet, PetFeedTime, PetWorkTime
+from database.models.pet import Pet, PetFeedTime
+from database.models.work import PetWorkTime
 
 
 async def create_pet(session: AsyncSession, telegram_id: int):
@@ -13,15 +14,9 @@ async def create_pet(session: AsyncSession, telegram_id: int):
         feed_time=now,
         next_feed_time=now
     )
-    pet_work_time = PetWorkTime(
-        telegram_id=telegram_id,
-        work_time=now,
-        next_work_time=now
-    )
 
     session.add(pet)
     session.add(pet_feed_time)
-    session.add(pet_work_time)
 
     await session.commit()
 
@@ -65,15 +60,3 @@ async def update_next_feed_time(session: AsyncSession, telegram_id: int, interva
     await session.execute(query)
     await session.commit()
 
-
-async def update_next_work_time(session: AsyncSession, telegram_id: int, interval: timedelta = timedelta(hours=4)):
-    query = (
-        update(PetWorkTime)
-        .where(PetWorkTime.telegram_id == telegram_id)
-        .values(
-            work_time=datetime.utcnow(),
-            next_work_time=datetime.utcnow() + interval
-        )
-    )
-    await session.execute(query)
-    await session.commit()
